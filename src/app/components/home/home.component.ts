@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { YoutubeService } from '../../services/youtube.service';
-import { $ } from 'protractor';
 
+declare var $:any;
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,6 @@ export class HomeComponent implements OnInit {
   constructor( private youtube: YoutubeService ) {
     this.youtube.getVideos()
       .subscribe( videos => {
-        console.log(videos);
         this.videos = videos;
       });
   }
@@ -26,6 +25,18 @@ export class HomeComponent implements OnInit {
 
   verVideo(video: any){
     this.videoSel = video;
-    $('#myModal').modal();
+    $('#youtubeModal').modal();
+  }
+
+  cerrarModal(){
+    this.videoSel = null;
+    $('#youtubeModal').modal('hide');
+  }
+
+  cargarMas(){
+    this.youtube.getVideos()
+      .subscribe( videos => {
+        this.videos.push.apply(this.videos, videos);
+      });
   }
 }

@@ -16,11 +16,19 @@ export class YoutubeService {
 
   getVideos() {
     const url = `${ this.youtubeUrl }/playlistItems`;
-    const params  = new HttpParams()
+    let params  = new HttpParams()
                       .set( 'part', 'snippet' )
                       .set( 'maxResults', '10' )
                       .set( 'playlistId', listaUploadsYouTube )
                       .set( 'key', apiKey );
+    if( this.nextPageToken ){
+      let params  = new HttpParams()
+                        .set( 'part', 'snippet' )
+                        .set( 'maxResults', '10' )
+                        .set( 'playlistId', listaUploadsYouTube )
+                        .set( 'nextPageToken', this.nextPageToken )
+                        .set( 'key', apiKey );
+    }                      
 
     return this.http.get( url, {params} ).pipe(map( (resp: any) => {
       this.nextPageToken = resp.nextPageToken;

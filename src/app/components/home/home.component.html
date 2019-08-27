@@ -15,21 +15,35 @@
         </div>
     </div>
 </div>>
-
+<button (click)="cargarMas()"
+  type="button" class="btn btn-outline-primary btn-block">
+  Cargar más videos
+</button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="youtubeModal" 
+                        tabindex="-1" 
+                        role="dialog" 
+                        aria-labelledby="exampleModalLabel" 
+                        aria-hidden="true"
+                        data-backdrop="static"
+                        data-keyboard="false">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+      <div class="modal-content" *ngIf="videoSel">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ videoSel.title }}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ videoSel?.title }}</h5>
 
         </div>
         <div class="modal-body">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/"></iframe>
+          <iframe width="100%" height="300" 
+                  [src]="videoSel.resourceId.videoId | videoYoutube" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen></iframe>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button (click)="cerrarModal()"
+                  type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
