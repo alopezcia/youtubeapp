@@ -1,6 +1,11 @@
 <div class="container main-container">
-    <h1>Canal de YouTube</h1>
+    <h1>Canal de YouTube <small>({{ youtube.totalCargados }} videos cargados de {{ youtube.maximoACargar }})</small></h1>
     <hr>
+    <button *ngIf="youtube.totalCargados < youtube.maximoACargar"
+            (click)="cargarMas()"
+            type="button" class="btn btn-outline-primary btn-block">
+      Cargar más videos
+    </button>
 
     <div class="card-columns" *ngIf="videos.length > 0">
         <div class="card animated fadeIn fast" *ngFor="let video of videos">
@@ -14,11 +19,7 @@
           </div>
         </div>
     </div>
-</div>>
-<button (click)="cargarMas()"
-  type="button" class="btn btn-outline-primary btn-block">
-  Cargar más videos
-</button>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="youtubeModal" 

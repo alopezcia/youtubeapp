@@ -11,8 +11,12 @@ export class YoutubeService {
 
   private youtubeUrl: string ='https://www.googleapis.com/youtube/v3';
   private nextPageToken: string = '';
+  private pageInfo: any;
 
-  constructor(private http: HttpClient ) { }
+  public  maximoACargar: number = 1000;
+  public  totalCargados: number = 0;
+
+  constructor( private http: HttpClient ) { }
 
   getVideos() {
     const url = `${ this.youtubeUrl }/playlistItems`;
@@ -21,21 +25,35 @@ export class YoutubeService {
                       .set( 'maxResults', '10' )
                       .set( 'playlistId', listaUploadsYouTube )
                       .set( 'key', apiKey );
-    if( this.nextPageToken ){
-      let params  = new HttpParams()
+    if ( this.nextPageToken ){
+      let maxResults = '10';
+      if ( this.maximoACargar <  this.totalCargados+10 ){
+        maxResults = '1';
+      }
+      params  = new HttpParams()
                         .set( 'part', 'snippet' )
-                        .set( 'maxResults', '10' )
+                        .set( 'maxResults', maxResults )
                         .set( 'playlistId', listaUploadsYouTube )
-                        .set( 'nextPageToken', this.nextPageToken )
+                        .set( 'pageToken', this.nextPageToken )
                         .set( 'key', apiKey );
-    }                      
+    }
 
     return this.http.get( url, {params} ).pipe(map( (resp: any) => {
-      this.nextPageToken = resp.nextPageToken;
       const videos: any[] = [];
-      for( const video of resp.items ){
-        const snippet = video.snippet;
-        videos.push( snippet );
+      this.pageInfo = resp.pageInfo;
+      if( this.totalCargados >= this.maximoACargar ){
+        this.totalCargados = this.maximoACargar;
+        return videos;
+      }
+
+      if ( this.nextPageToken !== resp.nextPageToken ){
+        this.nextPageToken = resp.nextPageToken;
+        this.totalCargados = this.totalCargados + this.pageInfo.resultsPerPage;
+        this.maximoACargar = this.pageInfo.totalResults;
+        for( const video of resp.items ){
+          const snippet = video.snippet;
+          videos.push( snippet );
+        }
       }
       return videos;
     }));
